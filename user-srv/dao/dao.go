@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"sync"
+
 	"github.com/papandadj/nezha-chat-backend/pkg/gormplus"
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
 	"github.com/papandadj/nezha-chat-backend/user-srv/conf"
@@ -9,6 +11,7 @@ import (
 var (
 	logger log.Logger
 	dao    *Dao
+	lock   sync.Mutex
 )
 
 func init() {
@@ -28,6 +31,9 @@ func (a *Dao) Ping() (err error) {
 
 //Init init a dao
 func Init() {
+	lock.Lock()
+	defer lock.Unlock()
+
 	if dao == nil {
 		logger.Infoln("Dao 已经初始化过了")
 		return

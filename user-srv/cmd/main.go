@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
+
+	"github.com/papandadj/nezha-chat-backend/user-srv/service"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
@@ -42,7 +45,7 @@ func main() {
 
 	registry := etcdv3.NewRegistry(addrEtcd)
 
-	service := grpc.NewService(
+	srv := grpc.NewService(
 		micro.Registry(registry),
 		micro.Name(cfg.Micro.Name),
 		micro.Version(cfg.Micro.Version),
@@ -50,7 +53,10 @@ func main() {
 		micro.RegisterInterval(time.Second*30),
 	)
 
-	if err := service.Run(); err != nil {
+	s := service.New()
+	fmt.Println(s)
+
+	if err := srv.Run(); err != nil {
 		logger.Fatal(err)
 	}
 }
