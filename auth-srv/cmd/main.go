@@ -4,18 +4,18 @@ import (
 	"os"
 	"time"
 
-	"github.com/papandadj/nezha-chat-backend/user-srv/dao"
+	"github.com/papandadj/nezha-chat-backend/auth-srv/dao"
 
-	"github.com/papandadj/nezha-chat-backend/proto/user"
+	"github.com/papandadj/nezha-chat-backend/proto/auth"
 
-	"github.com/papandadj/nezha-chat-backend/user-srv/service"
+	"github.com/papandadj/nezha-chat-backend/auth-srv/service"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/service/grpc"
 	"github.com/micro/go-plugins/registry/etcdv3"
+	"github.com/papandadj/nezha-chat-backend/auth-srv/conf"
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
-	"github.com/papandadj/nezha-chat-backend/user-srv/conf"
 )
 
 var (
@@ -61,7 +61,7 @@ func main() {
 
 	dao.Init()
 
-	user.RegisterUserHandler(srv.Server(), service.New(dao.GetDao()))
+	auth.RegisterAuthHandler(srv.Server(), service.New(dao.GetDao()))
 
 	if err := srv.Run(); err != nil {
 		logger.Fatal(err)

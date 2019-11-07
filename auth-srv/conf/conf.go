@@ -45,8 +45,16 @@ type Config struct {
 	Micro            Micro    `toml:"micro"`
 	RabbitMq         RabbitMq `toml:"rabbitmq"`
 	LogLevel         int8     `toml:"loglevel"`
+	Memory           Memory   `toml:"memory_cache"`
 	Workspace        string   `toml:"workspace"`
 	RootPackageSlash int      `toml:"root_package_slash"`
+	Secrete          string   `toml:"secrete"`
+}
+
+//Memory .
+type Memory struct {
+	DefaultExpiration int `toml:"default_expiration"`
+	IntervalClear     int `toml:"interval_clear"`
 }
 
 //MySQL .

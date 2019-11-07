@@ -18,3 +18,8 @@ type ModelUser struct {
 	Password string `gorm:"column:password"`
 	Image    string `gorm:"column:image"`
 }
+
+//TableName .
+func (a *ModelUser) TableName() string {
+	return "user"
+}

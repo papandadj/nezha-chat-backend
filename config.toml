@@ -1,6 +1,4 @@
 loglevel = 5
-workspace = "/home/dj/sanjin/go/nezha-chat-backend"
-root_package_slash = 3
 
 #mysql 参数配置
 [mysql]
@@ -14,7 +12,7 @@ user = "debian-sys-maint"
 # 密码
 password = "MuiW0yUkdALNBjcZ"
 # 数据库
-db_name = "nezha_chat_user"
+db_name = "v2_device_info"
 # 连接参数
 parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
 

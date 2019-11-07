@@ -1,20 +1,17 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"time"
-
-	"github.com/papandadj/nezha-chat-backend/user-srv/dao"
-
-	"github.com/papandadj/nezha-chat-backend/proto/user"
-
-	"github.com/papandadj/nezha-chat-backend/user-srv/service"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/service/grpc"
 	"github.com/micro/go-plugins/registry/etcdv3"
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
+	"github.com/papandadj/nezha-chat-backend/proto/user"
 	"github.com/papandadj/nezha-chat-backend/user-srv/conf"
 )
 
@@ -38,13 +35,9 @@ func init() {
 	//初始化日志
 	logger = log.New()
 	logger.SetLevel(log.Level(cfg.LogLevel))
-	logger.SetWorkspace(cfg.Workspace)
-	logger.SetRootPackageSlash(cfg.RootPackageSlash)
 }
 
 func main() {
-
-	//修改Etcd地址函数
 	addrEtcd := func(opts *registry.Options) {
 		opts.Addrs = cfg.Etcd.Addrs
 	}
@@ -59,11 +52,10 @@ func main() {
 		micro.RegisterInterval(time.Second*30),
 	)
 
-	dao.Init()
-
-	user.RegisterUserHandler(srv.Server(), service.New(dao.GetDao()))
-
-	if err := srv.Run(); err != nil {
-		logger.Fatal(err)
-	}
+	rpcuser := user.NewUserService("nezha.chat.user.srv.service", srv.Client())
+	resp, err := rpcuser.Post(context.Background(), &user.PostReq{
+		Username: "nezha",
+		Password: "888",
+	})
+	fmt.Println(resp, err)
 }

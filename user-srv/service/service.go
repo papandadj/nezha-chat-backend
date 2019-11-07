@@ -15,14 +15,12 @@ func init() {
 
 //Service .
 type Service struct {
-	Dao *dao.Dao
+	Dao dao.Interface
 }
 
 //New .
-func New() (service *Service) {
-	dao.Init()
+func New(daoIns dao.Interface) (service *Service) {
 	service = new(Service)
-	service.Dao = dao.GetDao()
-
+	service.Dao = daoIns
 	return
 }

@@ -18,6 +18,13 @@ func init() {
 	logger = log.Base()
 }
 
+//Interface dao
+type Interface interface {
+	UserPost(username, password string) (user *ModelUser, err error)
+	UserGetByUsername(username string) (user *ModelUser, ok bool, err error)
+	UserLogin(username, password string) (user *ModelUser, ok bool, err error)
+}
+
 //Dao .
 type Dao struct {
 	DB *gormplus.DB
@@ -34,7 +41,7 @@ func Init() {
 	lock.Lock()
 	defer lock.Unlock()
 
-	if dao == nil {
+	if dao != nil {
 		logger.Infoln("Dao 已经初始化过了")
 		return
 	}

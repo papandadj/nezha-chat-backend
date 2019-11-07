@@ -2,6 +2,15 @@ loglevel = 5
 workspace = "/home/dj/sanjin/go/nezha-chat-backend"
 root_package_slash = 3
 
+secrete = "secrete"
+
+
+[memory_cache]
+#token的过期时间是100分钟
+default_expiration = 100
+#清理周期
+interval_clear = 10
+
 #mysql 参数配置
 [mysql]
 debug = true
@@ -32,5 +41,5 @@ register_interval = 10
 
 
 [micro]
-name = "nezha.chat.user.srv.service"
+name = "nezha.chat.auth.srv.service"
 version = "1"

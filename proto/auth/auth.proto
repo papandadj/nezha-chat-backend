@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package nezha.chat.auth.srv.service;
+
+option go_package = "auth";
+
+service Auth {
+  rpc GetToken(GetTokenReq) returns (GetTokenResp) {}
+  rpc Check(CheckReq) returns (CheckResp) {}
+}
+
+message Error {
+  int32 code = 1;
+  string msg = 2;
+}
+
+message GetTokenReq {
+  string username = 1;
+  string id = 2;
+}
+
+message GetTokenResp {
+  Error error = 1;
+  string token = 2;
+}
+
+message CheckReq { string token = 1; }
+
+message CheckResp {
+  Error error = 1;
+  string username = 3;
+  string id = 4;
+}

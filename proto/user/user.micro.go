@@ -35,7 +35,7 @@ var _ server.Option
 
 type UserService interface {
 	Post(ctx context.Context, in *PostReq, opts ...client.CallOption) (*PostResp, error)
-	Get(ctx context.Context, in *GetReq, opts ...client.CallOption) (*GetResp, error)
+	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginResp, error)
 	GetList(ctx context.Context, in *GetListReq, opts ...client.CallOption) (*GetListResp, error)
 }
 
@@ -67,9 +67,9 @@ func (c *userService) Post(ctx context.Context, in *PostReq, opts ...client.Call
 	return out, nil
 }
 
-func (c *userService) Get(ctx context.Context, in *GetReq, opts ...client.CallOption) (*GetResp, error) {
-	req := c.c.NewRequest(c.name, "User.Get", in)
-	out := new(GetResp)
+func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginResp, error) {
+	req := c.c.NewRequest(c.name, "User.Login", in)
+	out := new(LoginResp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -91,14 +91,14 @@ func (c *userService) GetList(ctx context.Context, in *GetListReq, opts ...clien
 
 type UserHandler interface {
 	Post(context.Context, *PostReq, *PostResp) error
-	Get(context.Context, *GetReq, *GetResp) error
+	Login(context.Context, *LoginReq, *LoginResp) error
 	GetList(context.Context, *GetListReq, *GetListResp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		Post(ctx context.Context, in *PostReq, out *PostResp) error
-		Get(ctx context.Context, in *GetReq, out *GetResp) error
+		Login(ctx context.Context, in *LoginReq, out *LoginResp) error
 		GetList(ctx context.Context, in *GetListReq, out *GetListResp) error
 	}
 	type User struct {
@@ -116,8 +116,8 @@ func (h *userHandler) Post(ctx context.Context, in *PostReq, out *PostResp) erro
 	return h.UserHandler.Post(ctx, in, out)
 }
 
-func (h *userHandler) Get(ctx context.Context, in *GetReq, out *GetResp) error {
-	return h.UserHandler.Get(ctx, in, out)
+func (h *userHandler) Login(ctx context.Context, in *LoginReq, out *LoginResp) error {
+	return h.UserHandler.Login(ctx, in, out)
 }
 
 func (h *userHandler) GetList(ctx context.Context, in *GetListReq, out *GetListResp) error {

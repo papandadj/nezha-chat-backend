@@ -12,6 +12,15 @@ import (
 // Level describes the log severity level.
 type Level uint8
 
+var (
+	//workspace defined idea path, to easy location code .
+	workspace string
+	//rootPackageSlash defined file root package slash number.
+	//for example  github.com/papandadj/nezha-chat-backend set rootPackageSlash number 3. log will only print
+	//file after root package
+	rootPackageSlash int
+)
+
 const (
 	// PanicLevel level, highest level of severity. Logs and then calls panic with the
 	// message passed to Debug, Info, ...
@@ -33,6 +42,9 @@ const (
 
 // Logger is an interface that describes logging.
 type Logger interface {
+	SetWorkspace(path string)
+	SetRootPackageSlash(number int)
+
 	SetLevel(level Level)
 	SetOut(out io.Writer)
 
@@ -142,7 +154,10 @@ func (l logger) sourced() *logrus.Entry {
 		file = file[slash+1:]
 		fn = runtime.FuncForPC(pc).Name()
 	}
-	logger := l.entry.WithField("source", fmt.Sprintf("./%s/%s:%d", strings.Split(fn, ".")[0], file, line))
+
+	fnS := strings.Split(fn, "/")[rootPackageSlash:]
+	fn = strings.Join(fnS[:], "/")
+	logger := l.entry.WithField("source", fmt.Sprintf("%s/%s/%s:%d", workspace, strings.Split(fn, ".")[0], file, line))
 	return logger
 }
 
@@ -157,6 +172,16 @@ func New() Logger {
 // Base returns the base logger.
 func Base() Logger {
 	return baseLogger
+}
+
+//SetWorkspace sets the workspace of the logger
+func (l logger) SetWorkspace(path string) {
+	workspace = path
+}
+
+//SetRootPackageSlash sets the fileSlash of the logger
+func (l logger) SetRootPackageSlash(number int) {
+	rootPackageSlash = number
 }
 
 // SetLevel sets the Level of the base logger
