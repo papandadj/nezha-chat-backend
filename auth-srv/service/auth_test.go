@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"testing"
 
@@ -25,6 +26,8 @@ func TestMain(m *testing.M) {
 	stub = new(Stub)
 	//新建服务
 	service = New(stub)
+
+	service.tokenSecrete = secrete
 
 	code := m.Run()
 	os.Exit(code)
@@ -57,5 +60,36 @@ func TestGetToken(t *testing.T) {
 			t.Errorf("post failed to input %s, expected not null string  , got '' ", test)
 		}
 		t.Log(resp.Token)
+	}
+}
+
+func TestCheck(t *testing.T) {
+	var tests = []struct {
+		token string
+		resp  *auth.CheckResp
+	}{
+		{"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ0aW1lc3RhbXAiOjEyMzQ1LCJ1c2VybmFtZSI6Im5lemhhIn0.xHGOIRzIylTLWx-ceTa6UMsw4uO-kQk4asfZoT0XKms",
+			&auth.CheckResp{Username: "nezha", Id: "1"},
+		}, {"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ0aW1lc3RhbXAiOjEyMzQ1LCJ1c2VybmFtZSI6Im5lemhhIn0.xHGOIRzIylTLWx-ceTa6UMsw4uO-kQk4asfZoT0XKmd",
+			&auth.CheckResp{
+				Error: &auth.Error{Code: 400, Msg: "signature is invalid"},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		resp := &auth.CheckResp{}
+		req := &auth.CheckReq{Token: test.token}
+
+		err := service.Check(context.Background(), req, resp)
+		if err != nil {
+			t.Error("failed to connect server  ", err)
+			break
+		}
+
+		if fmt.Sprint(resp) != fmt.Sprint(test.resp) {
+			t.Errorf("failed to input %s, expected %v string  , got %v ", test.token, test.resp, resp)
+		}
+
 	}
 }

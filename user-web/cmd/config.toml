@@ -1,0 +1,26 @@
+loglevel = 5
+workspace = "/home/dj/sanjin/go/nezha-chat-backend"
+root_package_slash = 3
+
+[web]
+port = ":9500"
+
+[etcd]
+addrs = ["127.0.0.1:2379"]
+register_ttl = 15
+register_interval = 10
+
+[micro]
+name = "nezha.chat.user.web.service"
+version = "1"
+
+[remote]
+auth = "nezha.chat.auth.srv.service"
+user = "nezha.chat.user.srv.service"
+
+[hystrix]
+default_timeout = 1000
+default_max_concurrent = 1
+default_volume_threshold = 1
+default_sleep_window = 20
+default_error_percent_threshold = 1

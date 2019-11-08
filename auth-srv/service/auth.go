@@ -35,12 +35,14 @@ func (s *Service) GetToken(ctx context.Context, req *auth.GetTokenReq, resp *aut
 	return
 }
 
-//Check 检测用户token是否可以用
+//Check 检测用户token是否可以用, 如果token错误返回400
 func (s *Service) Check(ctx context.Context, req *auth.CheckReq, resp *auth.CheckResp) (err error) {
 
 	claim, err := ParseToken(req.Token, s.tokenSecrete)
 	if err != nil {
+		resp.Error = &auth.Error{Code: 400, Msg: err.Error()}
 		logger.Errorln(err)
+		err = nil
 		return
 	}
 

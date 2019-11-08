@@ -4,18 +4,14 @@ import (
 	"os"
 	"time"
 
-	"github.com/papandadj/nezha-chat-backend/user-srv/dao"
-
-	"github.com/papandadj/nezha-chat-backend/proto/user"
-
-	"github.com/papandadj/nezha-chat-backend/user-srv/service"
+	"github.com/papandadj/nezha-chat-backend/user-web/handler"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/service/grpc"
 	"github.com/micro/go-plugins/registry/etcdv3"
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
-	"github.com/papandadj/nezha-chat-backend/user-srv/conf"
+	"github.com/papandadj/nezha-chat-backend/user-web/conf"
 )
 
 var (
@@ -43,8 +39,6 @@ func init() {
 }
 
 func main() {
-
-	//修改Etcd地址函数
 	addrEtcd := func(opts *registry.Options) {
 		opts.Addrs = cfg.Etcd.Addrs
 	}
@@ -59,11 +53,10 @@ func main() {
 		micro.RegisterInterval(time.Second*10),
 	)
 
-	dao.Init()
+	engin := handler.NewHTTPHandler(srv)
 
-	user.RegisterUserHandler(srv.Server(), service.New(dao.GetDao()))
-
-	if err := srv.Run(); err != nil {
-		logger.Fatal(err)
+	if err := engin.Run(cfg.Web.Port); err != nil {
+		log.Fatal(err)
 	}
+
 }
