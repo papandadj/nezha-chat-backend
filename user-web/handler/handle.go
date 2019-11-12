@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"time"
+	"github.com/papandadj/nezha-chat-backend/pkg/tracer/gin2grpc"
 
 	hystrixGo "github.com/afex/hystrix-go/hystrix"
 	"github.com/gin-gonic/gin"
@@ -21,14 +21,12 @@ var (
 )
 
 func init() {
-
-	cfg = conf.GetGlobalConfig()
 	logger = log.Base()
-	Init()
 }
 
 //Init remote service handler .
 func Init() {
+	cfg = conf.GetGlobalConfig()
 	hystrixGo.DefaultTimeout = cfg.Hystrix.DefaultTimeout
 	hystrixGo.DefaultVolumeThreshold = cfg.Hystrix.DefaultVolumeThreshold
 	hystrixGo.DefaultErrorPercentThreshold = cfg.Hystrix.DefaultErrorPercentThreshold
@@ -47,14 +45,46 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 		ctx.JSON(200, map[string]string{"Msg": "pong"})
 	})
 
-	engin.POST("/test", middleware.HystrixMiddleware(test))
+	engin.POST("/test", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(test))
+	engin.POST("/sign_up", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(signUp))
 
 	return
 }
 
+//Response .
+type Response struct {
+}
+
+//注册接口
+func signUp(ctx *gin.Context) {
+	req := new(user.PostReq)
+
+	err := ctx.ShouldBind(req)
+	if err != nil {
+		ctx.JSON(400, "参数错误")
+		return
+	}
+
+	ctxW, ok := gin2grpc.ContextWithSpan(ctx)
+	if !ok {
+		logger.Errorln("不能得到context")
+	}
+
+	resp, err := remoteUser.Post(ctxW, &user.PostReq{Username: req.Username, Password: req.Password})
+	if err != nil {
+		logger.Errorln(err)
+		ctx.JSON(500, "")
+		return
+	}
+
+	if resp.Error != nil {
+		ctx.JSON(400, resp.Error)
+		return
+	}
+
+	ctx.JSON(200, resp)
+}
+
 func test(ctx *gin.Context) {
-	time.Sleep(2 * time.Second)
-	logger.Info("ddddd")
-	ctx.Status(200)
 
 }

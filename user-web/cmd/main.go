@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"time"
 
 	"github.com/papandadj/nezha-chat-backend/user-web/handler"
 
@@ -10,7 +9,11 @@ import (
 	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/service/grpc"
 	"github.com/micro/go-plugins/registry/etcdv3"
+
+	openTrace "github.com/opentracing/opentracing-go"
+
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
+	"github.com/papandadj/nezha-chat-backend/pkg/tracer"
 	"github.com/papandadj/nezha-chat-backend/user-web/conf"
 )
 
@@ -31,6 +34,7 @@ func init() {
 	}
 
 	cfg = conf.GetGlobalConfig()
+
 	//初始化日志
 	logger = log.New()
 	logger.SetLevel(log.Level(cfg.LogLevel))
@@ -45,14 +49,22 @@ func main() {
 
 	registry := etcdv3.NewRegistry(addrEtcd)
 
+	//设置opentrace
+	t, io, err := tracer.NewTracer("user-srv", "127.0.0.1:6831")
+	if err != nil {
+		logger.Fatalln(err)
+	}
+	defer io.Close()
+	openTrace.SetGlobalTracer(t)
+
 	srv := grpc.NewService(
 		micro.Registry(registry),
-		micro.Name(cfg.Micro.Name),
-		micro.Version(cfg.Micro.Version),
-		micro.RegisterTTL(time.Second*15),
-		micro.RegisterInterval(time.Second*10),
+		// micro.Name(cfg.Micro.Name),
+		// micro.Version(cfg.Micro.Version),
+		// micro.RegisterTTL(time.Second*15),
+		// micro.RegisterInterval(time.Second*10),
 	)
-
+	handler.Init()
 	engin := handler.NewHTTPHandler(srv)
 
 	if err := engin.Run(cfg.Web.Port); err != nil {

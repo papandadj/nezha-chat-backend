@@ -19,8 +19,8 @@ auth = "nezha.chat.auth.srv.service"
 user = "nezha.chat.user.srv.service"
 
 [hystrix]
-default_timeout = 1000
-default_max_concurrent = 1
-default_volume_threshold = 1
-default_sleep_window = 20
-default_error_percent_threshold = 1
+default_timeout = 10000
+default_max_concurrent = 20
+default_volume_threshold = 20
+default_sleep_window = 5000
+default_error_percent_threshold = 50
