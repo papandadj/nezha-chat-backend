@@ -36,7 +36,7 @@ func (s *Stub) UserGetByUsername(username string) (user *dao.ModelUser, ok bool,
 	return
 }
 
-func (s *Stub) UserLogin(username, password string) (user *dao.ModelUser, ok bool, err error) {
+func (s *Stub) UserCheckPassword(username, password string) (user *dao.ModelUser, ok bool, err error) {
 	return
 }
 

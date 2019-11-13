@@ -6,13 +6,14 @@ option go_package = "user";
 
 service User {
   rpc Post(PostReq) returns (PostResp) {}
-  rpc Login(LoginReq) returns (LoginResp) {}
+  rpc CheckPassword(CheckPasswordReq) returns (CheckPasswordResp) {}
   rpc GetList(GetListReq) returns (GetListResp) {}
 }
 
 message UserItem {
   string img = 1;
   string username = 2;
+  string id = 3;
 }
 
 message Error {
@@ -27,14 +28,15 @@ message PostReq {
 
 message PostResp { Error error = 1; }
 
-message LoginReq {
+message CheckPasswordReq {
   string username = 1;
   string password = 2;
 }
 
-message LoginResp {
+message CheckPasswordResp {
   Error error = 1;
-  string token = 2;
+  bool result = 2;
+  UserItem user = 3;
 }
 
 message GetListReq {
@@ -44,5 +46,5 @@ message GetListReq {
 
 message GetListResp {
   Error error = 1;
-  UserItem list = 2;
+  repeated UserItem list = 2;
 }

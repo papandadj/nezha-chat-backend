@@ -47,6 +47,7 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 
 	engin.POST("/test", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(test))
 	engin.POST("/sign_up", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(signUp))
+	engin.POST("/login", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(login))
 
 	return
 }
@@ -56,33 +57,77 @@ type Response struct {
 }
 
 //注册接口
-func signUp(ctx *gin.Context) {
+func signUp(c *gin.Context) {
 	req := new(user.PostReq)
 
-	err := ctx.ShouldBind(req)
+	err := c.ShouldBind(req)
 	if err != nil {
-		ctx.JSON(400, "参数错误")
+		c.JSON(400, "参数错误")
 		return
 	}
 
-	ctxW, ok := gin2grpc.ContextWithSpan(ctx)
-	if !ok {
-		logger.Errorln("不能得到context")
-	}
+	ctx, _ := gin2grpc.ContextWithSpan(c)
 
-	resp, err := remoteUser.Post(ctxW, &user.PostReq{Username: req.Username, Password: req.Password})
+	resp, err := remoteUser.Post(ctx, req)
 	if err != nil {
 		logger.Errorln(err)
-		ctx.JSON(500, "")
+		c.JSON(500, "")
 		return
 	}
 
 	if resp.Error != nil {
-		ctx.JSON(400, resp.Error)
+		c.JSON(400, resp.Error)
 		return
 	}
 
-	ctx.JSON(200, resp)
+	c.JSON(200, resp)
+}
+
+func login(c *gin.Context) {
+	req := new(user.CheckPasswordReq)
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.JSON(400, "参数错误")
+		return
+	}
+
+	ctx, _ := gin2grpc.ContextWithSpan(c)
+	resp, err := remoteUser.CheckPassword(ctx, req)
+
+	if err != nil {
+		logger.Errorln(err)
+		c.JSON(500, "")
+		return
+	}
+
+	if resp.Error != nil {
+		c.JSON(400, resp.Error)
+		return
+	}
+
+	//失败直接返回
+	if !resp.Result {
+		c.JSON(400, "账号或者密码错误")
+		return
+	}
+
+	tokenResp, err := remoteAuth.GetToken(ctx, &auth.GetTokenReq{
+		Id:       resp.User.Id,
+		Username: resp.User.Username,
+	})
+
+	if err != nil {
+		logger.Errorln(err)
+		c.JSON(500, "")
+		return
+	}
+
+	if resp.Error != nil {
+		c.JSON(400, resp.Error)
+		return
+	}
+
+	c.JSON(200, tokenResp)
 }
 
 func test(ctx *gin.Context) {

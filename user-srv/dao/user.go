@@ -17,8 +17,8 @@ func (d *Dao) UserGetByUsername(username string) (user *ModelUser, ok bool, err 
 	return
 }
 
-//UserLogin .
-func (d *Dao) UserLogin(username, password string) (user *ModelUser, ok bool, err error) {
+//UserCheckPassword .
+func (d *Dao) UserCheckPassword(username, password string) (user *ModelUser, ok bool, err error) {
 	user = new(ModelUser)
 	db := d.DB.Where("username = ?", username).Where("password = ?", password)
 	ok, err = d.DB.FindOne(db, user)

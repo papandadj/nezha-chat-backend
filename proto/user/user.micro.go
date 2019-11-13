@@ -35,7 +35,7 @@ var _ server.Option
 
 type UserService interface {
 	Post(ctx context.Context, in *PostReq, opts ...client.CallOption) (*PostResp, error)
-	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginResp, error)
+	CheckPassword(ctx context.Context, in *CheckPasswordReq, opts ...client.CallOption) (*CheckPasswordResp, error)
 	GetList(ctx context.Context, in *GetListReq, opts ...client.CallOption) (*GetListResp, error)
 }
 
@@ -67,9 +67,9 @@ func (c *userService) Post(ctx context.Context, in *PostReq, opts ...client.Call
 	return out, nil
 }
 
-func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginResp, error) {
-	req := c.c.NewRequest(c.name, "User.Login", in)
-	out := new(LoginResp)
+func (c *userService) CheckPassword(ctx context.Context, in *CheckPasswordReq, opts ...client.CallOption) (*CheckPasswordResp, error) {
+	req := c.c.NewRequest(c.name, "User.CheckPassword", in)
+	out := new(CheckPasswordResp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -91,14 +91,14 @@ func (c *userService) GetList(ctx context.Context, in *GetListReq, opts ...clien
 
 type UserHandler interface {
 	Post(context.Context, *PostReq, *PostResp) error
-	Login(context.Context, *LoginReq, *LoginResp) error
+	CheckPassword(context.Context, *CheckPasswordReq, *CheckPasswordResp) error
 	GetList(context.Context, *GetListReq, *GetListResp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		Post(ctx context.Context, in *PostReq, out *PostResp) error
-		Login(ctx context.Context, in *LoginReq, out *LoginResp) error
+		CheckPassword(ctx context.Context, in *CheckPasswordReq, out *CheckPasswordResp) error
 		GetList(ctx context.Context, in *GetListReq, out *GetListResp) error
 	}
 	type User struct {
@@ -116,8 +116,8 @@ func (h *userHandler) Post(ctx context.Context, in *PostReq, out *PostResp) erro
 	return h.UserHandler.Post(ctx, in, out)
 }
 
-func (h *userHandler) Login(ctx context.Context, in *LoginReq, out *LoginResp) error {
-	return h.UserHandler.Login(ctx, in, out)
+func (h *userHandler) CheckPassword(ctx context.Context, in *CheckPasswordReq, out *CheckPasswordResp) error {
+	return h.UserHandler.CheckPassword(ctx, in, out)
 }
 
 func (h *userHandler) GetList(ctx context.Context, in *GetListReq, out *GetListResp) error {

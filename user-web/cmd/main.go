@@ -50,7 +50,7 @@ func main() {
 	registry := etcdv3.NewRegistry(addrEtcd)
 
 	//设置opentrace
-	t, io, err := tracer.NewTracer("user-srv", "127.0.0.1:6831")
+	t, io, err := tracer.NewTracer("user-web", "127.0.0.1:6831")
 	if err != nil {
 		logger.Fatalln(err)
 	}
@@ -59,10 +59,6 @@ func main() {
 
 	srv := grpc.NewService(
 		micro.Registry(registry),
-		// micro.Name(cfg.Micro.Name),
-		// micro.Version(cfg.Micro.Version),
-		// micro.RegisterTTL(time.Second*15),
-		// micro.RegisterInterval(time.Second*10),
 	)
 	handler.Init()
 	engin := handler.NewHTTPHandler(srv)

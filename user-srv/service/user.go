@@ -40,8 +40,8 @@ func (s *Service) Post(ctx context.Context, req *user.PostReq, resp *user.PostRe
 	return
 }
 
-//Login 登录
-func (s *Service) Login(ctx context.Context, req *user.LoginReq, resp *user.LoginResp) (err error) {
+//CheckPassword .
+func (s *Service) CheckPassword(ctx context.Context, req *user.CheckPasswordReq, resp *user.CheckPasswordResp) (err error) {
 	if req.Username == "" || req.Password == "" {
 		resp.Error = &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}
 		return
@@ -49,9 +49,20 @@ func (s *Service) Login(ctx context.Context, req *user.LoginReq, resp *user.Logi
 
 	password := Sum256(req.Password)
 
-	//XXX:
-	logger.Debugln(password)
+	userM, ok, err := s.Dao.UserCheckPassword(req.Username, password)
+	if err != nil {
+		logger.Errorln(err)
+		return
+	}
 
+	resp.Result = ok
+	if ok {
+		resp.User = &user.UserItem{
+			Id:       string(userM.ID),
+			Username: userM.Username,
+			Img:      userM.Image,
+		}
+	}
 	return
 }
 
