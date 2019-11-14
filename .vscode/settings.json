@@ -3,6 +3,7 @@
         "afex",
         "dgrijalva",
         "hystrix",
-        "jinzhu"
+        "jinzhu",
+        "nezhe"
     ]
 }
