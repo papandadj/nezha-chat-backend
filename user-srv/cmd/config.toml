@@ -1,18 +1,18 @@
 loglevel = 5
-workspace = "/home/dj/sanjin/go/nezha-chat-backend"
+workspace = "/home/dj/workspace/github.com/nezha/nezha-chat-backend"
 root_package_slash = 3
 
 #mysql 参数配置
 [mysql]
 debug = true
 # 连接地址
-host = "127.0.0.1"
+host = "182.61.3.243"
 # 连接端口
 port= 3306
 # 用户名
-user = "debian-sys-maint"
+user = "test"
 # 密码
-password = "MuiW0yUkdALNBjcZ"
+password = "888"
 # 数据库
 db_name = "nezha_chat_user"
 # 连接参数

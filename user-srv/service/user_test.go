@@ -72,9 +72,9 @@ func TestPost(t *testing.T) {
 	}{
 		{"recorded", "888", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UserHasRegistered}}},
 		{"unrecorded", "888", &user.PostResp{Error: nil}},
-		{"", "888", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}}},
-		{"unrecorded", "", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}}},
-		{"", "", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}}},
+		// {"", "888", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}}},
+		// {"unrecorded", "", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}}},
+		// {"", "", &user.PostResp{Error: &user.Error{Code: 400, Msg: common.UsernameOrPasswordIsNull}}},
 	}
 
 	for _, test := range tests {

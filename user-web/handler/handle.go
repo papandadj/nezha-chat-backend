@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"errors"
+
+	"github.com/papandadj/nezha-chat-backend/common"
 	"github.com/papandadj/nezha-chat-backend/pkg/tracer/gin2grpc"
 
 	hystrixGo "github.com/afex/hystrix-go/hystrix"
@@ -47,7 +50,7 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 
 	engin.POST("/sign_up", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(signUp))
 	engin.POST("/login", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(login))
-	engin.POST("/user_get_list", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(userGetList))
+	engin.POST("/get_list", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(userGetList))
 
 	return
 }
@@ -58,56 +61,42 @@ type Response struct {
 
 //注册接口
 func signUp(c *gin.Context) {
-	req := new(user.PostReq)
-
-	err := c.ShouldBind(req)
+	validator := SignUpValidator{}
+	err := validator.Bind(c)
 	if err != nil {
-		c.JSON(400, "参数错误")
+		c.JSON(400, common.NewError(400, err))
 		return
 	}
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
-	resp, err := remoteUser.Post(ctx, req)
-	if err != nil {
-		logger.Errorln(err)
-		c.JSON(500, "")
+	resp, err := remoteUser.Post(ctx, &validator.Req)
+	if RemoteCallAbort(c, resp.Error, err) {
 		return
 	}
 
-	if resp.Error != nil {
-		c.JSON(400, resp.Error)
-		return
-	}
+	serializer := SignUpSerializer(resp)
 
-	c.JSON(200, resp)
+	c.JSON(200, serializer)
 }
 
 func login(c *gin.Context) {
-	req := new(user.CheckPasswordReq)
-	err := c.ShouldBind(req)
+	validator := LoginValidator{}
+	err := validator.Bind(c)
 	if err != nil {
-		c.JSON(400, "参数错误")
+		c.JSON(400, common.NewError(400, err))
 		return
 	}
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
-	resp, err := remoteUser.CheckPassword(ctx, req)
+	resp, err := remoteUser.CheckPassword(ctx, &validator.Req)
 
-	if err != nil {
-		logger.Errorln(err)
-		c.JSON(500, "")
+	if RemoteCallAbort(c, resp.Error, err) {
 		return
 	}
 
-	if resp.Error != nil {
-		c.JSON(400, resp.Error)
-		return
-	}
-
-	//失败直接返回
 	if !resp.Result {
-		c.JSON(400, "账号或者密码错误")
+		c.JSON(401, common.NewError(400, errors.New("账号或者密码错误")))
 		return
 	}
 
@@ -116,40 +105,30 @@ func login(c *gin.Context) {
 		Username: resp.User.Username,
 	})
 
-	if err != nil {
-		logger.Errorln(err)
-		c.JSON(500, "")
+	if RemoteCallAbort(c, resp.Error, err) {
 		return
 	}
 
-	if resp.Error != nil {
-		c.JSON(400, resp.Error)
-		return
-	}
+	serializer := LoginSerializer(tokenResp)
 
-	c.JSON(200, tokenResp)
+	c.JSON(200, serializer)
 }
 
 func userGetList(c *gin.Context) {
-	req := new(user.GetListReq)
-	err := c.ShouldBind(req)
+	validator := GetListValidator{}
+	err := validator.Bind(c)
 	if err != nil {
-		c.JSON(400, "参数错误")
+		c.JSON(400, common.NewError(400, err))
 		return
 	}
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
-	resp, err := remoteUser.GetList(ctx, req)
-	if err != nil {
-		logger.Errorln(err)
-		c.JSON(500, "")
+	resp, err := remoteUser.GetList(ctx, &validator.Req)
+
+	if RemoteCallAbort(c, resp.Error, err) {
 		return
 	}
 
-	if resp.Error != nil {
-		c.JSON(400, resp.Error)
-		return
-	}
-
-	c.JSON(200, resp)
+	serializer := GetListSerializer(resp)
+	c.JSON(200, serializer)
 }

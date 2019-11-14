@@ -8,15 +8,15 @@ baseUrl: http://localhost:9500
 
 ## 目录:
 
-[1. 用户注册](#user_sign_up)
-[2. 用户登录](#user_login)
-[3. 根据查询获取用户列表](#user_get_list)
+[1. 用户注册](#sign_up)
+[2. 用户登录](#login)
+[3. 根据查询获取用户列表](#get_list)
 
 
 
 ## 接口列表:
 
-### user_sign_up
+### sign_up
 
 #### 请求URL:
 
@@ -44,13 +44,13 @@ http://
 
 ```json
 {
-    "Msg":"用户账号或者密码已经注册",
+    "Msg":"用户已经注册",
     "Code": 409
 }
 ```
 
 
-### user_login
+### login
 
 #### 请求URL:
 
@@ -86,7 +86,7 @@ status: 200
 ```
 
 
-### user_get_list
+### get_list
 
 #### 请求URL:
 
