@@ -40,6 +40,10 @@ func (s *Stub) UserCheckPassword(username, password string) (user *dao.ModelUser
 	return
 }
 
+func (s *Stub) UserGetList(name string, ids []string) (user []*dao.ModelUser, err error) {
+	return
+}
+
 func TestMain(m *testing.M) {
 	//新建测试用户
 	now := time.Now()

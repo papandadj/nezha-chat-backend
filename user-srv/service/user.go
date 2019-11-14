@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 
+	"github.com/papandadj/nezha-chat-backend/user-srv/dao"
+
 	"github.com/papandadj/nezha-chat-backend/common"
 
 	"github.com/papandadj/nezha-chat-backend/proto/user"
@@ -66,8 +68,36 @@ func (s *Service) CheckPassword(ctx context.Context, req *user.CheckPasswordReq,
 	return
 }
 
-//TODO:
 //GetList 获取用户列表
 func (s *Service) GetList(ctx context.Context, req *user.GetListReq, resp *user.GetListResp) (err error) {
+	if len(req.Ids) == 0 && req.Name == "" {
+		resp.Error = &user.Error{Code: 400, Msg: "参数错误"}
+		return
+	}
+
+	userMList, err := s.Dao.UserGetList(req.Name, req.Ids)
+	if err != nil {
+		logger.Errorln(err)
+		resp.Error = &user.Error{
+			Code: 500,
+			Msg:  err.Error(),
+		}
+		return
+	}
+
+	resp.List = dtoUserMList2PbUserItem(userMList)
+	return
+}
+
+func dtoUserMList2PbUserItem(userMList []*dao.ModelUser) (userItems []*user.UserItem) {
+
+	for _, userM := range userMList {
+		item := new(user.UserItem)
+		item.Id = string(userM.ID)
+		item.Username = userM.Username
+		item.Img = userM.Image
+
+		userItems = append(userItems, item)
+	}
 	return
 }

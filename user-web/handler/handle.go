@@ -45,9 +45,9 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 		ctx.JSON(200, map[string]string{"Msg": "pong"})
 	})
 
-	engin.POST("/test", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(test))
 	engin.POST("/sign_up", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(signUp))
 	engin.POST("/login", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(login))
+	engin.POST("/user_get_list", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(userGetList))
 
 	return
 }
@@ -130,6 +130,26 @@ func login(c *gin.Context) {
 	c.JSON(200, tokenResp)
 }
 
-func test(ctx *gin.Context) {
+func userGetList(c *gin.Context) {
+	req := new(user.GetListReq)
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.JSON(400, "参数错误")
+		return
+	}
 
+	ctx, _ := gin2grpc.ContextWithSpan(c)
+	resp, err := remoteUser.GetList(ctx, req)
+	if err != nil {
+		logger.Errorln(err)
+		c.JSON(500, "")
+		return
+	}
+
+	if resp.Error != nil {
+		c.JSON(400, resp.Error)
+		return
+	}
+
+	c.JSON(200, resp)
 }
