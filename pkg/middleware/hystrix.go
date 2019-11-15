@@ -59,10 +59,17 @@ func HystrixMiddleware(ctx *gin.Context) {
 		return nil
 	}, func(e error) error {
 		fmt.Println("hystrix : ", e)
+
+		status := ctx.Writer.Status()
+		if status >= http.StatusInternalServerError {
+			return nil
+		}
+
 		ctx.JSON(500, struct {
 			Code int64
 			Msg  string
 		}{500, "server unavailable"})
+
 		return e
 	})
 }

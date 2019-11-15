@@ -3,8 +3,10 @@ package handler
 import (
 	"errors"
 
+	"github.com/papandadj/nezha-chat-backend/pkg/middleware"
+
 	"github.com/gin-gonic/gin"
-	"github.com/papandadj/nezha-chat-backend/proto/user"
+	"github.com/papandadj/nezha-chat-backend/proto/friend"
 )
 
 var (
@@ -12,72 +14,48 @@ var (
 	ErrInputParams = errors.New("用户输入的参数有误")
 )
 
-//SignUpValidator .
-type SignUpValidator struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Req      user.PostReq
+//PostValidator ,
+type PostValidator struct {
+	UserID string `json:"user_id"`
+	Req    friend.PostReq
 }
 
 //Bind .
-func (s *SignUpValidator) Bind(c *gin.Context) (err error) {
+func (s *PostValidator) Bind(c *gin.Context) (err error) {
 	err = c.ShouldBind(s)
 	if err != nil {
 		return
 	}
 
-	s.Req.Username = s.Username
-	s.Req.Password = s.Password
+	userInfo, _ := middleware.AuthWithGin(c)
 
-	if s.Req.Username == "" || s.Req.Password == "" {
+	s.Req.UserId = s.UserID
+	s.Req.TokenId = userInfo.ID
+
+	if s.Req.UserId == "" || s.Req.TokenId == "" {
 		err = ErrInputParams
 	}
 
 	return
 }
 
-//LoginValidator .
-type LoginValidator struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Req      user.CheckPasswordReq
-}
-
-//Bind .
-func (l *LoginValidator) Bind(c *gin.Context) (err error) {
-	err = c.ShouldBind(l)
-	if err != nil {
-		return
-	}
-
-	l.Req.Username = l.Username
-	l.Req.Password = l.Password
-
-	if l.Req.Username == "" || l.Req.Password == "" {
-		err = ErrInputParams
-	}
-
-	return
-}
-
-//GetListValidator .
+//GetListValidator ,
 type GetListValidator struct {
-	Name string   `json:"name"`
-	IDs  []string `json:"ids"`
-	Req  user.GetListReq
+	Req friend.PostReq
 }
 
 //Bind .
-func (g *GetListValidator) Bind(c *gin.Context) (err error) {
-	err = c.ShouldBind(g)
+func (s *GetListValidator) Bind(c *gin.Context) (err error) {
+	err = c.ShouldBind(s)
 	if err != nil {
 		return
 	}
 
-	g.Req.Name = g.Name
-	g.Req.Ids = g.IDs
+	userInfo, _ := middleware.AuthWithGin(c)
 
-	if g.Req.Name == "" && len(g.Req.Ids) == 0 {
+	s.Req.TokenId = userInfo.ID
+
+	if s.Req.UserId == "" || s.Req.TokenId == "" {
 		err = ErrInputParams
 	}
 

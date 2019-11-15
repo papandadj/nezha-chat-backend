@@ -17,6 +17,7 @@ version = "1"
 [remote]
 auth = "nezha.chat.auth.srv.service"
 user = "nezha.chat.user.srv.service"
+friend = "nezha.chat.friend.srv.service"
 
 [hystrix]
 default_timeout = 1000

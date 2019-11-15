@@ -64,8 +64,9 @@ type Hystrix struct {
 
 //Remote .
 type Remote struct {
-	Auth string `toml:"auth"`
-	User string `toml:"user"`
+	Auth   string `toml:"auth"`
+	User   string `toml:"user"`
+	Friend string `toml:"friend"`
 }
 
 //Etcd .

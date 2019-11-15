@@ -71,7 +71,7 @@ func signUp(c *gin.Context) {
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
 	resp, err := remoteUser.Post(ctx, &validator.Req)
-	if RemoteCallAbort(c, resp.Error, err) {
+	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 
@@ -91,7 +91,7 @@ func login(c *gin.Context) {
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 	resp, err := remoteUser.CheckPassword(ctx, &validator.Req)
 
-	if RemoteCallAbort(c, resp.Error, err) {
+	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 
@@ -105,7 +105,7 @@ func login(c *gin.Context) {
 		Username: resp.User.Username,
 	})
 
-	if RemoteCallAbort(c, resp.Error, err) {
+	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 
@@ -126,7 +126,7 @@ func userGetList(c *gin.Context) {
 
 	resp, err := remoteUser.GetList(ctx, &validator.Req)
 
-	if RemoteCallAbort(c, resp.Error, err) {
+	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 

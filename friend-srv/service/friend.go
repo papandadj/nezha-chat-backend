@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/papandadj/nezha-chat-backend/proto/friend"
 )
 
 //Post .
 func (s *Service) Post(ctx context.Context, req *friend.PostReq, resp *friend.PostResp) (err error) {
+	fmt.Println(req)
 	return
 }
 

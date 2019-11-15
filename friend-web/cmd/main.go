@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/papandadj/nezha-chat-backend/user-web/handler"
+	"github.com/papandadj/nezha-chat-backend/friend-web/handler"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry"
@@ -12,9 +12,9 @@ import (
 
 	openTrace "github.com/opentracing/opentracing-go"
 
+	"github.com/papandadj/nezha-chat-backend/friend-web/conf"
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
 	"github.com/papandadj/nezha-chat-backend/pkg/tracer"
-	"github.com/papandadj/nezha-chat-backend/user-web/conf"
 )
 
 var (
@@ -50,7 +50,7 @@ func main() {
 	registry := etcdv3.NewRegistry(addrEtcd)
 
 	//设置opentrace
-	t, io, err := tracer.NewTracer("user-web", "127.0.0.1:6831")
+	t, io, err := tracer.NewTracer("friend-web", "127.0.0.1:6831")
 	if err != nil {
 		logger.Fatalln(err)
 	}

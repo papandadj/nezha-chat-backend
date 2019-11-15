@@ -1,26 +1,26 @@
 package handler
 
 import (
-	"errors"
-
 	"github.com/papandadj/nezha-chat-backend/common"
 	"github.com/papandadj/nezha-chat-backend/pkg/tracer/gin2grpc"
 
 	hystrixGo "github.com/afex/hystrix-go/hystrix"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro"
+	"github.com/papandadj/nezha-chat-backend/friend-web/conf"
 	"github.com/papandadj/nezha-chat-backend/pkg/log"
 	"github.com/papandadj/nezha-chat-backend/pkg/middleware"
 	"github.com/papandadj/nezha-chat-backend/proto/auth"
+	"github.com/papandadj/nezha-chat-backend/proto/friend"
 	"github.com/papandadj/nezha-chat-backend/proto/user"
-	"github.com/papandadj/nezha-chat-backend/user-web/conf"
 )
 
 var (
-	logger     log.Logger
-	cfg        *conf.Config
-	remoteUser user.UserService
-	remoteAuth auth.AuthService
+	logger       log.Logger
+	cfg          *conf.Config
+	remoteUser   user.UserService
+	remoteAuth   auth.AuthService
+	remoteFriend friend.FriendService
 )
 
 func init() {
@@ -43,25 +43,23 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 
 	remoteUser = user.NewUserService(cfg.Remote.User, cl.Client())
 	remoteAuth = auth.NewAuthService(cfg.Remote.Auth, cl.Client())
+	remoteFriend = friend.NewFriendService(cfg.Remote.Friend, cl.Client())
 
 	engin.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(200, map[string]string{"Msg": "pong"})
 	})
 
-	engin.POST("/sign_up", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, signUp)
-	engin.POST("/login", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, login)
-	engin.POST("/get_list", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), userGetList)
+	engin.POST("/post", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), post)
+	engin.POST("/get_list", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), getList)
 
 	return
 }
 
-//Response .
-type Response struct {
-}
+//TODO:
 
-//注册接口
-func signUp(c *gin.Context) {
-	validator := SignUpValidator{}
+//添加朋友
+func post(c *gin.Context) {
+	validator := PostValidator{}
 	err := validator.Bind(c)
 	if err != nil {
 		c.JSON(400, common.NewError(400, err))
@@ -70,52 +68,18 @@ func signUp(c *gin.Context) {
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
-	resp, err := remoteUser.Post(ctx, &validator.Req)
-	if RemoteCallAbort(c, resp.Error, err) {
+	resp, err := remoteFriend.Post(ctx, &validator.Req)
+	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 
-	serializer := SignUpSerializer(resp)
-
+	serializer := PostSerializer(resp)
 	c.JSON(200, serializer)
 }
 
-func login(c *gin.Context) {
-	validator := LoginValidator{}
-	err := validator.Bind(c)
-	if err != nil {
-		c.JSON(400, common.NewError(400, err))
-		return
-	}
-
-	ctx, _ := gin2grpc.ContextWithSpan(c)
-	resp, err := remoteUser.CheckPassword(ctx, &validator.Req)
-
-	if RemoteCallAbort(c, resp.Error, err) {
-		return
-	}
-
-	if !resp.Result {
-		c.JSON(401, common.NewError(400, errors.New("账号或者密码错误")))
-		return
-	}
-
-	tokenResp, err := remoteAuth.GetToken(ctx, &auth.GetTokenReq{
-		Id:       resp.User.Id,
-		Username: resp.User.Username,
-	})
-
-	if RemoteCallAbort(c, resp.Error, err) {
-		return
-	}
-
-	serializer := LoginSerializer(tokenResp)
-
-	c.JSON(200, serializer)
-}
-
-func userGetList(c *gin.Context) {
-	validator := GetListValidator{}
+//获取朋友列表
+func getList(c *gin.Context) {
+	validator := PostValidator{}
 	err := validator.Bind(c)
 	if err != nil {
 		c.JSON(400, common.NewError(400, err))
@@ -124,12 +88,11 @@ func userGetList(c *gin.Context) {
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
-	resp, err := remoteUser.GetList(ctx, &validator.Req)
-
-	if RemoteCallAbort(c, resp.Error, err) {
+	resp, err := remoteFriend.Post(ctx, &validator.Req)
+	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 
-	serializer := GetListSerializer(resp)
+	serializer := PostSerializer(resp)
 	c.JSON(200, serializer)
 }
