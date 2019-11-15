@@ -48,9 +48,9 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 		ctx.JSON(200, map[string]string{"Msg": "pong"})
 	})
 
-	engin.POST("/sign_up", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(signUp))
-	engin.POST("/login", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(login))
-	engin.POST("/get_list", gin2grpc.TracerWrapper, middleware.HystrixMiddleware(userGetList))
+	engin.POST("/sign_up", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, signUp)
+	engin.POST("/login", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, login)
+	engin.POST("/get_list", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), userGetList)
 
 	return
 }
@@ -123,6 +123,7 @@ func userGetList(c *gin.Context) {
 	}
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
+
 	resp, err := remoteUser.GetList(ctx, &validator.Req)
 
 	if RemoteCallAbort(c, resp.Error, err) {

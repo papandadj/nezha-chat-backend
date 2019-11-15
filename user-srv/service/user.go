@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/papandadj/nezha-chat-backend/user-srv/dao"
 
@@ -50,7 +51,7 @@ func (s *Service) CheckPassword(ctx context.Context, req *user.CheckPasswordReq,
 	resp.Result = ok
 	if ok {
 		resp.User = &user.UserItem{
-			Id:       string(userM.ID),
+			Id:       parseID2Str(userM.ID),
 			Username: userM.Username,
 			Img:      userM.Image,
 		}
@@ -78,11 +79,16 @@ func dtoUserMList2PbUserItem(userMList []*dao.ModelUser) (userItems []*user.User
 
 	for _, userM := range userMList {
 		item := new(user.UserItem)
-		item.Id = string(userM.ID)
+		item.Id = parseID2Str(userM.ID)
 		item.Username = userM.Username
 		item.Img = userM.Image
 
 		userItems = append(userItems, item)
 	}
+	return
+}
+
+func parseID2Str(id uint) (str string) {
+	str = strconv.FormatUint(uint64(id), 10)
 	return
 }

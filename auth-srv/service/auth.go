@@ -40,7 +40,7 @@ func (s *Service) Check(ctx context.Context, req *auth.CheckReq, resp *auth.Chec
 
 	claim, err := ParseToken(req.Token, s.tokenSecrete)
 	if err != nil {
-		resp.Error = &auth.Error{Code: 400, Msg: err.Error()}
+		resp.Error = &auth.Error{Code: 403, Msg: err.Error()}
 		logger.Errorln(err)
 		err = nil
 		return

@@ -64,7 +64,7 @@ func main() {
 	engin := handler.NewHTTPHandler(srv)
 
 	if err := engin.Run(cfg.Web.Port); err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
 
 }
