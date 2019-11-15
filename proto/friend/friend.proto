@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package nezha.chat.friend.srv.service;
+
+option go_package = "friend";
+
+service Friend {
+  rpc Post(PostReq) returns (PostResp) {}
+  rpc DelByUserID(DelByUserIDReq) returns (DelByUserIDResp) {}
+  rpc CheckIsFriend(CheckIsFriendReq) returns (CheckIsFriendResp) {}
+  rpc GetList(GetListReq) returns (GetListResp) {}
+}
+
+message Error {
+  int64 code = 1;
+  string msg = 2;
+}
+
+message UserItem {
+  string img = 1;
+  string username = 2;
+  string id = 3;
+}
+
+message PostReq {
+  string tokenId = 1;
+  string userId = 2;
+}
+
+message PostResp { Error error = 1; }
+
+message DelByUserIDReq {
+  string tokenId = 1;
+  string userId = 2;
+}
+
+message DelByUserIDResp { Error error = 1; }
+
+message CheckIsFriendReq {
+  string tokenId = 1;
+  string userId = 2;
+}
+
+message CheckIsFriendResp {
+  Error error = 1;
+  bool result = 2;
+}
+
+message GetListReq { string tokenId = 1; }
+message GetListResp {
+  Error error = 1;
+  repeated UserItem list = 2;
+}
