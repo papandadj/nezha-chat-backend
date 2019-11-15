@@ -42,3 +42,12 @@ func (d *Dao) UserGetList(name string, ids []string) (user []*ModelUser, err err
 	err = db.Find(&user).Error
 	return
 }
+
+//UserGet .
+func (d *Dao) UserGet(id string) (user *ModelUser, exist bool, err error) {
+	user = new(ModelUser)
+	db := d.DB.Where("id = ?", id)
+	exist, err = d.DB.FindOne(db, user)
+
+	return
+}

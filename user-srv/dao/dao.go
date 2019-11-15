@@ -24,6 +24,7 @@ type Interface interface {
 	UserGetByUsername(username string) (user *ModelUser, ok bool, err error)
 	UserCheckPassword(username, password string) (user *ModelUser, ok bool, err error)
 	UserGetList(name string, ids []string) (user []*ModelUser, err error)
+	UserGet(id string) (user *ModelUser, exist bool, err error)
 }
 
 //Dao .

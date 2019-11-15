@@ -68,6 +68,16 @@ func post(c *gin.Context) {
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
+	uResp, err := remoteUser.Get(ctx, &validator.ReqUserGet)
+	if RemoteCallAbortUser(c, uResp, err) {
+		return
+	}
+
+	if !uResp.Result {
+		c.JSON(404, common.NewErrorByStr(404, "用户不存在"))
+		return
+	}
+
 	resp, err := remoteFriend.Post(ctx, &validator.Req)
 	if RemoteCallAbort(c, resp, err) {
 		return

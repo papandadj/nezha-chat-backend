@@ -8,6 +8,7 @@ service User {
   rpc Post(PostReq) returns (PostResp) {}
   rpc CheckPassword(CheckPasswordReq) returns (CheckPasswordResp) {}
   rpc GetList(GetListReq) returns (GetListResp) {}
+  rpc Get(GetReq) returns (GetResp) {}
 }
 
 message UserItem {
@@ -47,4 +48,11 @@ message GetListReq {
 message GetListResp {
   Error error = 1;
   repeated UserItem list = 2;
+}
+
+message GetReq { string id = 1; }
+message GetResp {
+  Error error = 1;
+  bool result = 2;
+  UserItem user = 3;
 }

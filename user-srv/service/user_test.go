@@ -43,6 +43,9 @@ func (s *Stub) UserCheckPassword(username, password string) (user *dao.ModelUser
 func (s *Stub) UserGetList(name string, ids []string) (user []*dao.ModelUser, err error) {
 	return
 }
+func (s *Stub) UserGet(id string) (user *ModelUser, exist bool, err error) {
+	return
+}
 
 func TestMain(m *testing.M) {
 	//新建测试用户

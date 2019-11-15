@@ -3,6 +3,8 @@ package handler
 import (
 	"errors"
 
+	"github.com/papandadj/nezha-chat-backend/proto/user"
+
 	"github.com/papandadj/nezha-chat-backend/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -16,8 +18,9 @@ var (
 
 //PostValidator ,
 type PostValidator struct {
-	UserID string `json:"user_id"`
-	Req    friend.PostReq
+	UserID     string `json:"user_id"`
+	ReqUserGet user.GetReq
+	Req        friend.PostReq
 }
 
 //Bind .
@@ -28,6 +31,8 @@ func (s *PostValidator) Bind(c *gin.Context) (err error) {
 	}
 
 	userInfo, _ := middleware.AuthWithGin(c)
+
+	s.ReqUserGet.Id = s.UserID
 
 	s.Req.UserId = s.UserID
 	s.Req.TokenId = userInfo.ID

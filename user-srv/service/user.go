@@ -75,6 +75,30 @@ func (s *Service) GetList(ctx context.Context, req *user.GetListReq, resp *user.
 	return
 }
 
+//Get 获取用户列表
+func (s *Service) Get(ctx context.Context, req *user.GetReq, resp *user.GetResp) (err error) {
+	userM, exist, err := s.Dao.UserGet(req.Id)
+	if err != nil {
+		logger.Errorln(err)
+		resp.Error = &user.Error{
+			Code: 500,
+			Msg:  err.Error(),
+		}
+		return
+	}
+
+	resp.Result = exist
+	if resp.Result {
+		resp.User = &user.UserItem{
+			Id:       parseID2Str(userM.ID),
+			Username: userM.Username,
+			Img:      userM.Image,
+		}
+	}
+
+	return
+}
+
 func dtoUserMList2PbUserItem(userMList []*dao.ModelUser) (userItems []*user.UserItem) {
 
 	for _, userM := range userMList {

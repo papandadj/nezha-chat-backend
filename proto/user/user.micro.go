@@ -37,6 +37,7 @@ type UserService interface {
 	Post(ctx context.Context, in *PostReq, opts ...client.CallOption) (*PostResp, error)
 	CheckPassword(ctx context.Context, in *CheckPasswordReq, opts ...client.CallOption) (*CheckPasswordResp, error)
 	GetList(ctx context.Context, in *GetListReq, opts ...client.CallOption) (*GetListResp, error)
+	Get(ctx context.Context, in *GetReq, opts ...client.CallOption) (*GetResp, error)
 }
 
 type userService struct {
@@ -87,12 +88,23 @@ func (c *userService) GetList(ctx context.Context, in *GetListReq, opts ...clien
 	return out, nil
 }
 
+func (c *userService) Get(ctx context.Context, in *GetReq, opts ...client.CallOption) (*GetResp, error) {
+	req := c.c.NewRequest(c.name, "User.Get", in)
+	out := new(GetResp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	Post(context.Context, *PostReq, *PostResp) error
 	CheckPassword(context.Context, *CheckPasswordReq, *CheckPasswordResp) error
 	GetList(context.Context, *GetListReq, *GetListResp) error
+	Get(context.Context, *GetReq, *GetResp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -100,6 +112,7 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		Post(ctx context.Context, in *PostReq, out *PostResp) error
 		CheckPassword(ctx context.Context, in *CheckPasswordReq, out *CheckPasswordResp) error
 		GetList(ctx context.Context, in *GetListReq, out *GetListResp) error
+		Get(ctx context.Context, in *GetReq, out *GetResp) error
 	}
 	type User struct {
 		user
@@ -122,4 +135,8 @@ func (h *userHandler) CheckPassword(ctx context.Context, in *CheckPasswordReq, o
 
 func (h *userHandler) GetList(ctx context.Context, in *GetListReq, out *GetListResp) error {
 	return h.UserHandler.GetList(ctx, in, out)
+}
+
+func (h *userHandler) Get(ctx context.Context, in *GetReq, out *GetResp) error {
+	return h.UserHandler.Get(ctx, in, out)
 }
