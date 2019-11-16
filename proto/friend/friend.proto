@@ -16,12 +16,6 @@ message Error {
   string msg = 2;
 }
 
-message UserItem {
-  string img = 1;
-  string username = 2;
-  string id = 3;
-}
-
 message PostReq {
   string tokenId = 1;
   string userId = 2;
@@ -49,5 +43,5 @@ message CheckIsFriendResp {
 message GetListReq { string tokenId = 1; }
 message GetListResp {
   Error error = 1;
-  repeated UserItem list = 2;
+  repeated string list = 2;
 }

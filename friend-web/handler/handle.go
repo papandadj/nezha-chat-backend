@@ -50,12 +50,11 @@ func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 	})
 
 	engin.POST("/post", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), post)
+	engin.POST("delete/:user_id", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), deleteByUserID)
 	engin.POST("/get_list", middleware.HystrixMiddleware, gin2grpc.TracerWrapper, middleware.AuthMiddleware(remoteAuth), getList)
 
 	return
 }
-
-//TODO:
 
 //添加朋友
 func post(c *gin.Context) {
@@ -87,9 +86,8 @@ func post(c *gin.Context) {
 	c.JSON(200, serializer)
 }
 
-//获取朋友列表
-func getList(c *gin.Context) {
-	validator := PostValidator{}
+func deleteByUserID(c *gin.Context) {
+	validator := DeleteByUserIDValidator{}
 	err := validator.Bind(c)
 	if err != nil {
 		c.JSON(400, common.NewError(400, err))
@@ -98,11 +96,55 @@ func getList(c *gin.Context) {
 
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
-	resp, err := remoteFriend.Post(ctx, &validator.Req)
+	uResp, err := remoteUser.Get(ctx, &validator.ReqUserGet)
+	if RemoteCallAbort(c, uResp, err) {
+		return
+	}
+
+	if !uResp.Result {
+		c.JSON(404, common.NewErrorByStr(404, "用户不存在"))
+		return
+	}
+
+	resp, err := remoteFriend.DelByUserID(ctx, &validator.Req)
 	if RemoteCallAbort(c, resp, err) {
 		return
 	}
 
-	serializer := PostSerializer(resp)
+	serializer := DeleteByUserIDSerializer(resp)
+	c.JSON(200, serializer)
+
+}
+
+//获取朋友列表
+func getList(c *gin.Context) {
+	validator := GetListValidator{}
+	err := validator.Bind(c)
+	if err != nil {
+		c.JSON(400, common.NewError(400, err))
+		return
+	}
+
+	ctx, _ := gin2grpc.ContextWithSpan(c)
+
+	resp, err := remoteFriend.GetList(ctx, &validator.Req)
+	if RemoteCallAbort(c, resp, err) {
+		return
+	}
+
+	if len(resp.List) == 0 {
+		c.JSON(200, common.NewResponseEmptyList())
+		return
+	}
+
+	userGetListReq := user.GetListReq{Ids: resp.List}
+
+	userGetListResp, err := remoteUser.GetList(ctx, &userGetListReq)
+	if RemoteCallAbort(c, resp, err) {
+		return
+	}
+
+	serializer := GetListSerializer(userGetListResp)
+
 	c.JSON(200, serializer)
 }

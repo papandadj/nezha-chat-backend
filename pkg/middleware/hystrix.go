@@ -43,11 +43,11 @@ func HystrixWrap(handle gin.HandlerFunc) gin.HandlerFunc {
 func HystrixMiddleware(ctx *gin.Context) {
 	name := ctx.Request.Method + "-" + ctx.Request.RequestURI
 	hystrix.Do(name, func() error {
-		// defer func() {
-		// 	if r := recover(); r != nil {
-		// 		fmt.Println("hystrix catch err: ", r)
-		// 	}
-		// }()
+		defer func() {
+			if r := recover(); r != nil {
+				fmt.Println("hystrix catch err: ", r)
+			}
+		}()
 
 		ctx.Next()
 		status := ctx.Writer.Status()

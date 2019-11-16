@@ -21,8 +21,8 @@ func init() {
 //Interface dao
 type Interface interface {
 	Post(tokenID, userID string) (friend *ModelFriend, err error)
-	Delete(tokenID, userID string) (err error)
-	GetList(tokenID string) (err error)
+	DeleteByUserID(tokenID, userID string) (err error)
+	GetList(tokenID string) (friend []*ModelFriend, err error)
 	checkIsFriend(tokenID, userID string) (result bool, err error)
 }
 

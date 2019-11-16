@@ -26,6 +26,18 @@ type ResponseError struct {
 	Msg  string `json:"msg"`
 }
 
+//NewResponseEmptyList .
+func NewResponseEmptyList() ResponseEmptyList {
+	return ResponseEmptyList{
+		List: []string{},
+	}
+}
+
+//ResponseEmptyList .
+type ResponseEmptyList struct {
+	List []string `json:"list"`
+}
+
 //RemoteResponseError 远程调用的时候， 返回解析返回的error msg跟error code .
 func RemoteResponseError(iResp interface{}, err error) (code int64, msg string, abort bool) {
 	if err != nil {

@@ -44,9 +44,37 @@ func (s *PostValidator) Bind(c *gin.Context) (err error) {
 	return
 }
 
+//DeleteByUserIDValidator ,
+type DeleteByUserIDValidator struct {
+	UserID     string `json:"user_id"`
+	ReqUserGet user.GetReq
+	Req        friend.DelByUserIDReq
+}
+
+//Bind .
+func (s *DeleteByUserIDValidator) Bind(c *gin.Context) (err error) {
+	err = c.ShouldBind(s)
+	if err != nil {
+		return
+	}
+
+	userInfo, _ := middleware.AuthWithGin(c)
+
+	s.ReqUserGet.Id = s.UserID
+
+	s.Req.UserId = s.UserID
+	s.Req.TokenId = userInfo.ID
+
+	if s.Req.UserId == "" || s.Req.TokenId == "" {
+		err = ErrInputParams
+	}
+
+	return
+}
+
 //GetListValidator ,
 type GetListValidator struct {
-	Req friend.PostReq
+	Req friend.GetListReq
 }
 
 //Bind .
@@ -60,7 +88,7 @@ func (s *GetListValidator) Bind(c *gin.Context) (err error) {
 
 	s.Req.TokenId = userInfo.ID
 
-	if s.Req.UserId == "" || s.Req.TokenId == "" {
+	if s.Req.TokenId == "" {
 		err = ErrInputParams
 	}
 
