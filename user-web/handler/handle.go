@@ -105,7 +105,7 @@ func login(c *gin.Context) {
 		Username: resp.User.Username,
 	})
 
-	if RemoteCallAbort(c, resp, err) {
+	if RemoteCallAbort(c, tokenResp, err) {
 		return
 	}
 

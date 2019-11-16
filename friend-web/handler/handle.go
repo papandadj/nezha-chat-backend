@@ -69,7 +69,7 @@ func post(c *gin.Context) {
 	ctx, _ := gin2grpc.ContextWithSpan(c)
 
 	uResp, err := remoteUser.Get(ctx, &validator.ReqUserGet)
-	if RemoteCallAbortUser(c, uResp, err) {
+	if RemoteCallAbort(c, uResp, err) {
 		return
 	}
 
