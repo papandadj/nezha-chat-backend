@@ -40,6 +40,7 @@ func Init() {
 //NewHTTPHandler .
 func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 	engin = gin.New()
+	engin.Use(middleware.CORSMiddleware())
 
 	remoteUser = user.NewUserService(cfg.Remote.User, cl.Client())
 	remoteAuth = auth.NewAuthService(cfg.Remote.Auth, cl.Client())

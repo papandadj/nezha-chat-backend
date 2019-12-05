@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package nezha.chat.common.srv.service;
+
+option go_package = "common";
+
+service Common {
+  rpc GetList(GetListReq) returns (GetListResp) {}
+}
+
+message GetListReq {}
+
+message Error {
+  int64 code = 1;
+  string msg = 2;
+}
+
+message GetListResp {
+  repeated string list = 1;
+  Error error = 2;
+}
