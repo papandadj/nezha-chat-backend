@@ -75,7 +75,7 @@ func (s *Service) GetList(ctx context.Context, req *user.GetListReq, resp *user.
 	return
 }
 
-//Get 获取用户列表
+//Get 获取当前用户
 func (s *Service) Get(ctx context.Context, req *user.GetReq, resp *user.GetResp) (err error) {
 	userM, exist, err := s.Dao.UserGet(req.Id)
 	if err != nil {

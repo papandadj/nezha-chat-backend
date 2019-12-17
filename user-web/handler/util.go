@@ -11,6 +11,7 @@ func RemoteCallAbort(c *gin.Context, resp interface{}, err error) (abort bool) {
 	var code int64
 	var msg string
 	code, msg, abort = common.RemoteResponseError(resp, err)
+	logger.Errorln(msg)
 	if abort {
 		codeInt := int(code)
 		c.JSON(codeInt, common.NewErrorByStr(code, msg))

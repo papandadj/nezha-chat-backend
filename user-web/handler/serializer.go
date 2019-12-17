@@ -28,10 +28,10 @@ func LoginSerializer(resp *auth.GetTokenResp) LoginResp {
 
 //GetListResp .
 type GetListResp struct {
-	List []getListList `json:"list"`
+	List []getListItem `json:"list"`
 }
 
-type getListList struct {
+type getListItem struct {
 	Img      string `json:"img"`
 	Username string `json:"username"`
 	ID       string `json:"id"`
@@ -41,7 +41,7 @@ type getListList struct {
 func GetListSerializer(resp *user.GetListResp) GetListResp {
 	wResp := GetListResp{}
 	for _, item := range resp.List {
-		wResp.List = append(wResp.List, getListList{
+		wResp.List = append(wResp.List, getListItem{
 			Img:      item.Img,
 			Username: item.Username,
 			ID:       item.Id,
@@ -49,4 +49,20 @@ func GetListSerializer(resp *user.GetListResp) GetListResp {
 	}
 
 	return wResp
+}
+
+//GetResp .
+type GetResp struct {
+	Img      string `json:"img"`
+	Username string `json:"username"`
+	ID       string `json:"id"`
+}
+
+//GetSerializer .
+func GetSerializer(userI *user.UserItem) GetResp {
+	return GetResp{
+		Img:      userI.Img,
+		Username: userI.Username,
+		ID:       userI.Id,
+	}
 }

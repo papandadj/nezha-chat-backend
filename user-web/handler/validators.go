@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/papandadj/nezha-chat-backend/pkg/middleware"
 	"github.com/papandadj/nezha-chat-backend/proto/user"
 )
 
@@ -78,6 +79,24 @@ func (g *GetListValidator) Bind(c *gin.Context) (err error) {
 	g.Req.Ids = g.IDs
 
 	if g.Req.Name == "" && len(g.Req.Ids) == 0 {
+		err = ErrInputParams
+	}
+
+	return
+}
+
+//GetValidator .
+type GetValidator struct {
+	UserID string
+}
+
+//Bind .
+func (g *GetValidator) Bind(c *gin.Context) (err error) {
+	userInfo, _ := middleware.AuthWithGin(c)
+
+	g.UserID = userInfo.ID
+
+	if g.UserID == "" {
 		err = ErrInputParams
 	}
 
