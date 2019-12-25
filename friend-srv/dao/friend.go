@@ -22,7 +22,10 @@ func (d *Dao) GetList(tokenID string) (friends []*ModelFriend, err error) {
 	return
 }
 
-//checkIsFriend .
-func (d *Dao) checkIsFriend(tokenID, userID string) (result bool, err error) {
+//CheckIsFriend .
+func (d *Dao) CheckIsFriend(tokenID, userID string) (result bool, err error) {
+	friend := new(ModelFriend)
+	db := d.DB.Model(&friend).Where("user_id1 = ? and user_id2 = ?", tokenID, userID)
+	result, err = d.DB.Check(db)
 	return
 }

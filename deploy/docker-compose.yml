@@ -1,0 +1,96 @@
+version: "3.5"
+
+services: 
+    etcd:
+        image: bitnami/etcd:latest
+        container_name: etcd
+        environment:
+            - ALLOW_NONE_AUTHENTICATION=yes
+            - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379,http://0.0.0.0:4001
+            - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379,http://0.0.0.0:4001
+        ports:
+            - 2379:2379
+            - 2380:2380
+        networks:
+            - "nezha-backend"
+
+    auth-srv:
+        image: nezha-chat/auth-srv:v1
+        container_name: auth-srv
+        volumes:
+            - ./auth-srv/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+
+    common-srv:
+        image: nezha-chat/common-srv:v1
+        container_name: common-srv
+        volumes:
+            - ./common-srv/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+
+    common-web:
+        image: nezha-chat/common-web:v1
+        container_name: common-web
+        volumes:
+            - ./common-web/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        ports:
+            - 9502:9502
+        networks:
+            - "nezha-backend"
+
+    friend-srv:
+        image: nezha-chat/friend-srv:v1
+        container_name: friend-srv
+        volumes:
+            - ./friend-srv/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+
+    friend-web:
+        image: nezha-chat/friend-web:v1
+        container_name: friend-web
+        volumes:
+            - ./friend-web/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+        ports:
+            - 9501:9501
+            
+    user-srv:
+        image: nezha-chat/user-srv:v1
+        container_name: user-srv
+        volumes:
+            - ./user-srv/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+
+    user-web:
+        image: nezha-chat/user-web:v1
+        container_name: user-web
+        volumes:
+            - ./user-web/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+        ports:
+            - 9500:9500
+            
+networks: 
+    nezha-backend:
+        driver: bridge
+    

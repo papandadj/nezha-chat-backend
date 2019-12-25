@@ -23,7 +23,7 @@ type Interface interface {
 	Post(tokenID, userID string) (friend *ModelFriend, err error)
 	DeleteByUserID(tokenID, userID string) (err error)
 	GetList(tokenID string) (friend []*ModelFriend, err error)
-	checkIsFriend(tokenID, userID string) (result bool, err error)
+	CheckIsFriend(tokenID, userID string) (result bool, err error)
 }
 
 //Dao .

@@ -1,0 +1,41 @@
+FROM ubuntu:18.04 AS auth-srv
+RUN mkdir work
+WORKDIR /work
+COPY ./auth-srv/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS common-srv
+RUN mkdir work
+WORKDIR /work
+COPY ./common-srv/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS common-web
+RUN mkdir work
+WORKDIR /work
+COPY ./common-web/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS friend-srv
+RUN mkdir work
+WORKDIR /work
+COPY ./friend-srv/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS friend-web
+RUN mkdir work
+WORKDIR /work
+COPY ./friend-web/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS user-srv
+RUN mkdir work
+WORKDIR /work
+COPY ./user-srv/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS user-web
+RUN mkdir work
+WORKDIR /work
+COPY ./user-web/cmd ./
+CMD [ "./cmd" ]

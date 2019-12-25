@@ -29,6 +29,14 @@ func (s *Service) DelByUserID(ctx context.Context, req *friend.DelByUserIDReq, r
 
 //CheckIsFriend .
 func (s *Service) CheckIsFriend(ctx context.Context, req *friend.CheckIsFriendReq, resp *friend.CheckIsFriendResp) (err error) {
+	user1, user2 := compareTwoUserPosition(req.TokenId, req.UserId)
+	exist, err := s.Dao.CheckIsFriend(user1, user2)
+	if err != nil {
+		logger.Errorln(err)
+		return
+	}
+
+	resp.Result = exist
 	return
 }
 

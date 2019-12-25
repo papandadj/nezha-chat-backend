@@ -1,0 +1,27 @@
+loglevel = 5
+workspace = "/home/dj/workspace/github.com/nezha/nezha-chat-backend"
+root_package_slash = 3
+
+[web]
+port = ":9501"
+
+[etcd]
+addrs = ["etcd:2379"]
+register_ttl = 15
+register_interval = 10
+
+[micro]
+name = "nezha.chat.friend.web.service"
+version = "1"
+
+[remote]
+auth = "nezha.chat.auth.srv.service"
+user = "nezha.chat.user.srv.service"
+friend = "nezha.chat.friend.srv.service"
+
+[hystrix]
+default_timeout = 1000
+default_max_concurrent = 2
+default_volume_threshold = 3
+default_sleep_window = 5000
+default_error_percent_threshold = 50

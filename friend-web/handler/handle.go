@@ -40,6 +40,7 @@ func Init() {
 //NewHTTPHandler .
 func NewHTTPHandler(cl micro.Service) (engin *gin.Engine) {
 	engin = gin.New()
+	engin.Use(middleware.CORSMiddleware())
 
 	remoteUser = user.NewUserService(cfg.Remote.User, cl.Client())
 	remoteAuth = auth.NewAuthService(cfg.Remote.Auth, cl.Client())
@@ -75,6 +76,24 @@ func post(c *gin.Context) {
 	if !uResp.Result {
 		c.JSON(404, common.NewErrorByStr(404, "用户不存在"))
 		return
+	}
+
+	{
+		//如果是朋友直接返回
+		resp, err := remoteFriend.CheckIsFriend(ctx, &friend.CheckIsFriendReq{
+			TokenId: validator.Req.TokenId,
+			UserId:  validator.UserID,
+		})
+		if RemoteCallAbort(c, resp, err) {
+			return
+		}
+
+		logger.Debugln(resp)
+
+		if resp.Result {
+			c.JSON(200, common.NewErrorByStr(200, ""))
+			return
+		}
 	}
 
 	resp, err := remoteFriend.Post(ctx, &validator.Req)
