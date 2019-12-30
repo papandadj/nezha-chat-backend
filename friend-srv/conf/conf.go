@@ -46,6 +46,7 @@ type Config struct {
 	RabbitMq         RabbitMq `toml:"rabbitmq"`
 	LogLevel         int8     `toml:"loglevel"`
 	Memory           Memory   `toml:"memory_cache"`
+	Jaeger           Jaeger   `toml:"jaeger"`
 	Workspace        string   `toml:"workspace"`
 	RootPackageSlash int      `toml:"root_package_slash"`
 	Secrete          string   `toml:"secrete"`
@@ -55,6 +56,12 @@ type Config struct {
 type Memory struct {
 	DefaultExpiration int `toml:"default_expiration"`
 	IntervalClear     int `toml:"interval_clear"`
+}
+
+//Jaeger .
+type Jaeger struct {
+	ServiceName string `toml:"service_name"`
+	URL         string `toml:"url"`
 }
 
 //MySQL .

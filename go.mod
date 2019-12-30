@@ -15,7 +15,9 @@ require (
 	github.com/micro/go-micro v1.8.1
 	github.com/micro/go-plugins v1.2.0
 	github.com/opentracing/opentracing-go v1.1.0
+	github.com/papandadj/amqp v0.0.0-20191224053833-a6df2329684a
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.4.2
+	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271
 	github.com/uber/jaeger-client-go v2.17.0+incompatible
 )

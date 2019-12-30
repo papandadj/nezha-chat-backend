@@ -1,16 +1,4 @@
-create database nezha_chat_common character set utf8mb4;
 use nezha_chat_common;
-create table nezha_chat_common_user_image (
-  id int(10) unsigned not null auto_increment comment '主键',
-  name varchar(20) not null comment '中文名',
-  url varchar(200) not null comment 'url',
-  created_at datetime default now(),
-  updated_at datetime default now(),
-  PRIMARY KEY (`id`),
-  unique key `url` (`url`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_bin COMMENT ='默认人物表';
-
-
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('哪吒', 'nezha1.png');
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('哪吒', 'nezha2.png');
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('哪吒', 'nezha3.png');
@@ -25,3 +13,12 @@ insert into `nezha_chat_common_user_image` (`name`, `url`) values('太乙', 'tai
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('小猪熊', 'xiaozhuxiong.png');
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('殷夫人', 'yinfuren.png');
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('小龙女', 'xiaolongnv.png');
+
+use nezha_chat_user;
+insert into `user` (`username`, `password`,`image`) values('nezha', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/nezha1.png');
+insert into `user` (`username`, `password`,`image`) values('daji', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/daji.png');
+insert into `user` (`username`, `password`,`image`) values('erlangshen', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/erlangshen.png');
+insert into `user` (`username`, `password`,`image`) values('jifa', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/jifa.png');
+insert into `user` (`username`, `password`,`image`) values('xiaolongnv', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/xiaolongnv.png');
+insert into `user` (`username`, `password`,`image`) values('xiaozhuxiong', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/xiaozhuxiong.png');
+

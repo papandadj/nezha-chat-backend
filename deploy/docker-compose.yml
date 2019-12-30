@@ -1,6 +1,6 @@
 version: "3.5"
 
-services: 
+services:
     etcd:
         image: bitnami/etcd:latest
         container_name: etcd
@@ -11,6 +11,36 @@ services:
         ports:
             - 2379:2379
             - 2380:2380
+        networks:
+            - "nezha-backend"
+    jaeger:
+        image: jaegertracing/all-in-one:1.16
+        container_name: jaeger
+        environment:
+            - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+        ports:
+            # - 5775:5775/udp
+            # - 6831:6831/udp
+            # - 6832:6832/udp
+            # - 5778:5778
+            # - 14268:14268
+            # - 9411:9411
+            - 16686:16686
+        networks:
+            - "nezha-backend"
+
+    rabbitmq:
+        container_name: rabbitmq
+        environment:
+            - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+        image: "rabbitmq:3-management"
+        ports:
+            # - 5672:5672
+            # - 15672:15672
+            - 15674:15674
+        volumes:
+            - ./config/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+            - ./config/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
         networks:
             - "nezha-backend"
 
@@ -67,7 +97,7 @@ services:
             - "nezha-backend"
         ports:
             - 9501:9501
-            
+
     user-srv:
         image: nezha-chat/user-srv:v1
         container_name: user-srv
@@ -89,8 +119,32 @@ services:
             - "nezha-backend"
         ports:
             - 9500:9500
-            
-networks: 
+
+    chat-srv:
+        image: nezha-chat/chat-srv:v1
+        container_name: chat-srv
+        volumes:
+            - ./chat-srv/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+        restart: on-failure
+        depends_on:
+            - rabbitmq
+
+    chat-web:
+        image: nezha-chat/chat-web:v1
+        container_name: chat-web
+        volumes:
+            - ./chat-web/config.toml:/work/config.toml
+        environment:
+            confPath: ./config.toml
+        networks:
+            - "nezha-backend"
+        ports:
+            - 9503:9503
+
+networks:
     nezha-backend:
         driver: bridge
-    

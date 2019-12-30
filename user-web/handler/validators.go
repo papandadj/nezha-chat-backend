@@ -78,9 +78,9 @@ func (g *GetListValidator) Bind(c *gin.Context) (err error) {
 	g.Req.Name = g.Name
 	g.Req.Ids = g.IDs
 
-	if g.Req.Name == "" && len(g.Req.Ids) == 0 {
-		err = ErrInputParams
-	}
+	// if g.Req.Name == "" && len(g.Req.Ids) == 0 {
+	// 	err = ErrInputParams
+	// }
 
 	return
 }

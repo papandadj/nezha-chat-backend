@@ -44,8 +44,15 @@ type Config struct {
 	Remote           Remote  `toml:"remote"`
 	Hystrix          Hystrix `toml:"hystrix"`
 	LogLevel         int8    `toml:"loglevel"`
+	Jaeger           Jaeger  `toml:"jaeger"`
 	Workspace        string  `toml:"workspace"`
 	RootPackageSlash int     `toml:"root_package_slash"`
+}
+
+//Jaeger .
+type Jaeger struct {
+	ServiceName string `toml:"service_name"`
+	URL         string `toml:"url"`
 }
 
 //Web .

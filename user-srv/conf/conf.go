@@ -44,9 +44,16 @@ type Config struct {
 	Etcd             Etcd     `toml:"etcd"`
 	Micro            Micro    `toml:"micro"`
 	RabbitMq         RabbitMq `toml:"rabbitmq"`
+	Jaeger           Jaeger   `toml:"jaeger"`
 	LogLevel         int8     `toml:"loglevel"`
 	Workspace        string   `toml:"workspace"`
 	RootPackageSlash int      `toml:"root_package_slash"`
+}
+
+//Jaeger .
+type Jaeger struct {
+	ServiceName string `toml:"service_name"`
+	URL         string `toml:"url"`
 }
 
 //MySQL .

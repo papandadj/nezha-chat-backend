@@ -50,7 +50,7 @@ func main() {
 	registry := etcdv3.NewRegistry(addrEtcd)
 
 	//设置opentrace
-	t, io, err := tracer.NewTracer("user-web", "127.0.0.1:6831")
+	t, io, err := tracer.NewTracer(cfg.Jaeger.ServiceName, cfg.Jaeger.URL)
 	if err != nil {
 		logger.Fatalln(err)
 	}

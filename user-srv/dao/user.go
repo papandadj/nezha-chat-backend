@@ -34,7 +34,7 @@ func (d *Dao) UserCheckPassword(username, password string) (user *ModelUser, ok 
 //UserGetList .
 func (d *Dao) UserGetList(name string, ids []string) (user []*ModelUser, err error) {
 	var db *gorm.DB
-	if name != "" {
+	if len(ids) == 0 {
 		db = d.DB.Where("username LIKE ?", fmt.Sprintf("%s%s%s", "%", name, "%"))
 	} else {
 		db = d.DB.Where("id IN (?)", ids)

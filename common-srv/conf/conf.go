@@ -44,9 +44,16 @@ type Config struct {
 	Etcd             Etcd   `toml:"etcd"`
 	Micro            Micro  `toml:"micro"`
 	LogLevel         int8   `toml:"loglevel"`
+	Jaeger           Jaeger `toml:"jaeger"`
 	Workspace        string `toml:"workspace"`
 	RootPackageSlash int    `toml:"root_package_slash"`
 	ImgPrefix        string `toml:"img_prefix"`
+}
+
+//Jaeger .
+type Jaeger struct {
+	ServiceName string `toml:"service_name"`
+	URL         string `toml:"url"`
 }
 
 //MySQL .

@@ -10,6 +10,11 @@ addrs = ["127.0.0.1:2379"]
 register_ttl = 15
 register_interval = 10
 
+[jaeger]
+url = "127.0.0.1:6831"
+service_name = "common_web"
+
+
 [micro]
 name = "nezha.chat.common.web.service"
 version = "1"

@@ -10,6 +10,10 @@ addrs = ["etcd:2379"]
 register_ttl = 15
 register_interval = 10
 
+[jaeger]
+url = "jaeger:6831"
+service_name = "friend_web"
+
 [micro]
 name = "nezha.chat.friend.web.service"
 version = "1"

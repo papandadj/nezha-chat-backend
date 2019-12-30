@@ -7,15 +7,15 @@ img_prefix = "http://182.61.3.243:3000/"
 
 #mysql 参数配置
 [mysql]
-debug = true
+debug = false
 # 连接地址
 host = "182.61.3.243"
 # 连接端口
 port= 3306
 # 用户名
-user = "test"
+user = "nezha"
 # 密码
-password = "888"
+password = "test"
 # 数据库
 db_name = "nezha_chat_common"
 # 连接参数
@@ -25,6 +25,10 @@ parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true
 addrs = ["etcd:2379"]
 register_ttl = 15
 register_interval = 10
+
+[jaeger]
+url = "jaeger:6831"
+service_name = "common-srv"
 
 [micro]
 name = "nezha.chat.common.srv.service"

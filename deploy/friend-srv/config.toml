@@ -19,9 +19,9 @@ host = "182.61.3.243"
 # 连接端口
 port= 3306
 # 用户名
-user = "test"
+user = "nezha"
 # 密码
-password = "888"
+password = "test"
 # 数据库
 db_name = "nezha_chat_friend"
 # 连接参数
@@ -38,7 +38,9 @@ addrs = ["etcd:2379"]
 register_ttl = 15
 register_interval = 10
 
-
+[jaeger]
+url = "jaeger:6831"
+service_name = "friend-srv"
 
 [micro]
 name = "nezha.chat.friend.srv.service"

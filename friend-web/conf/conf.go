@@ -43,6 +43,7 @@ type Config struct {
 	Micro            Micro   `toml:"micro"`
 	Remote           Remote  `toml:"remote"`
 	Hystrix          Hystrix `toml:"hystrix"`
+	Jaeger           Jaeger  `toml:"jaeger"`
 	LogLevel         int8    `toml:"loglevel"`
 	Workspace        string  `toml:"workspace"`
 	RootPackageSlash int     `toml:"root_package_slash"`
@@ -60,6 +61,12 @@ type Hystrix struct {
 	DefaultVolumeThreshold       int `toml:"default_volume_threshold"`
 	DefaultSleepWindow           int `toml:"default_sleep_window"`
 	DefaultErrorPercentThreshold int `toml:"default_error_percent_threshold"`
+}
+
+//Jaeger .
+type Jaeger struct {
+	ServiceName string `toml:"service_name"`
+	URL         string `toml:"url"`
 }
 
 //Remote .

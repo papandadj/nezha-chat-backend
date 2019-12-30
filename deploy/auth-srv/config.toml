@@ -11,22 +11,6 @@ default_expiration = 100
 #清理周期
 interval_clear = 10
 
-#mysql 参数配置
-[mysql]
-debug = true
-# 连接地址
-host = "127.0.0.1"
-# 连接端口
-port= 3306
-# 用户名
-user = "debian-sys-maint"
-# 密码
-password = "MuiW0yUkdALNBjcZ"
-# 数据库
-db_name = "nezha_chat_user"
-# 连接参数
-parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
-
 [rabbitmq]
 user = "guest"
 password = "guest"
@@ -38,7 +22,9 @@ addrs = ["etcd:2379"]
 register_ttl = 15
 register_interval = 10
 
-
+[jaeger]
+url = "jaeger:6831"
+service_name = "auth_srv"
 
 [micro]
 name = "nezha.chat.auth.srv.service"

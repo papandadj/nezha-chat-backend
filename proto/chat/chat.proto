@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package nezha.chat.chat.srv.service;
+
+option go_package = "chat";
+
+service Chat {
+  rpc Post(PostReq) returns (PostResp) {}
+  rpc GetQueue(GetQueueReq) returns (GetQueueResp) {}
+}
+
+message Error {
+  int64 code = 1;
+  string msg = 2;
+}
+
+message PostReq {
+  string tokenId = 1;
+  string userId = 2;
+  string message = 3;
+}
+
+message PostResp { Error error = 1; }
+
+message GetQueueReq { string tokenId = 1; }
+
+message GetQueueResp {
+  Error error = 1;
+  string queue = 2;
+}

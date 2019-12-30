@@ -39,3 +39,16 @@ RUN mkdir work
 WORKDIR /work
 COPY ./user-web/cmd ./
 CMD [ "./cmd" ]
+
+
+FROM ubuntu:18.04 AS chat-srv
+RUN mkdir work
+WORKDIR /work
+COPY ./chat-srv/cmd ./
+CMD [ "./cmd" ]
+
+FROM ubuntu:18.04 AS chat-web
+RUN mkdir work
+WORKDIR /work
+COPY ./chat-web/cmd ./
+CMD [ "./cmd" ]

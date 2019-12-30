@@ -4,6 +4,10 @@ root_package_slash = 3
 
 img_prefix = "http://papanda.tk:3000/"
 
+[jaeger]
+url = "127.0.0.1:6831"
+service_name = "common_srv"
+
 
 #mysql 参数配置
 [mysql]
