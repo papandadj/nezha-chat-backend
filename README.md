@@ -3,6 +3,8 @@
 
 效果展示 http://182.61.3.243:3000/demo.mp4
 
+demo: http://182.61.3.243:10000/#/
+
 ![](./api/doc/media/backendFunc.png)
 
 如图， 后端主要有这么多的服务， 其中以web结尾的对前端提供http接口， web和srv之间通过grpc进行通讯， 服务注册采用的是etcd。
