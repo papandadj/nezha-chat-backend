@@ -40,7 +40,7 @@ http://
 
 ## 接口列表:
 
-### post 
+### get_queue 
 
 #### 请求URL:
 

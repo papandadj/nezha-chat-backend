@@ -15,10 +15,12 @@ insert into `nezha_chat_common_user_image` (`name`, `url`) values('殷夫人', '
 insert into `nezha_chat_common_user_image` (`name`, `url`) values('小龙女', 'xiaolongnv.png');
 
 use nezha_chat_user;
-insert into `user` (`username`, `password`,`image`) values('nezha', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/nezha1.png');
+insert into `user` (`username`, `password`,`image`) values('nezha', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/nezha2.png');
 insert into `user` (`username`, `password`,`image`) values('daji', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/daji.png');
 insert into `user` (`username`, `password`,`image`) values('erlangshen', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/erlangshen.png');
 insert into `user` (`username`, `password`,`image`) values('jifa', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/jifa.png');
 insert into `user` (`username`, `password`,`image`) values('xiaolongnv', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/xiaolongnv.png');
 insert into `user` (`username`, `password`,`image`) values('xiaozhuxiong', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/xiaozhuxiong.png');
-
+insert into `user` (`username`, `password`,`image`) values('leizhenzi', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/leizhenzi.png');
+insert into `user` (`username`, `password`,`image`) values('shiji', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/shiji.png');
+insert into `user` (`username`, `password`,`image`) values('nvwa', '5e968ce47ce4a17e3823c29332a39d049a8d0afb08d157eb6224625f92671a51', 'http://182.61.3.243:3000/nvwa.png');

@@ -39,7 +39,7 @@ http://
 }
 ```
 
-### delete
+### delete/:user_id
 
 #### 请求URL:
 
